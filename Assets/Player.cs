@@ -2,27 +2,44 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class Player : MonoBehaviour
 {
+
     public float moveSpeed = 5.0f;  // Velocidade de movimento do jogador
     private Rigidbody2D rb;         // Componente Rigidbody2D do objeto
     private Vector2 moveInput;      // Entrada do jogador transformada em vetor de movimento
 
+    public int maxHealth = 100;  // Vida máxima do jogador
+    public int currentHealth;    // Vida atual do jogador
+
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();  // Obtém o componente Rigidbody2D
+        rb = GetComponent<Rigidbody2D>();
+        currentHealth = maxHealth;
     }
 
     void Update()
     {
-        // Lê as entradas do teclado nas direções horizontal e vertical
         moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        moveInput.Normalize();  // Normaliza o vetor para garantir movimento uniforme em todas as direções
+        moveInput.Normalize();
     }
 
     void FixedUpdate()
     {
-        // Aplica o vetor de movimento ao Rigidbody2D para mover o objeto
         rb.MovePosition(rb.position + moveInput * moveSpeed * Time.fixedDeltaTime);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Destroy(gameObject);
     }
 }
